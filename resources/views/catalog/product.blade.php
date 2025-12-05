@@ -1,72 +1,104 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-4xl mx-auto py-8">
-        <div class="grid md:grid-cols-2 gap-6">
-            <div>
-                @if ($product->images->count())
-                    <img src="{{ asset($product->images->first()->path) }}" alt="{{ $product->name }}" class="w-full mb-3">
-                    <div class="flex gap-2">
-                        @foreach ($product->images as $image)
-                            <img src="{{ asset($image->path) }}" alt="" class="h-16 w-16 object-cover border">
-                        @endforeach
-                    </div>
-                @else
-                    <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
-                        No Image
-                    </div>
-                @endif
-            </div>
+    <div class="bg-gray-50">
+        <div class="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+            <a href="{{ url()->previous() }}" class="mb-4 inline-flex items-center text-xs text-gray-500 hover:text-gray-800">
+                ← Back
+            </a>
 
-            <div>
-                <h1 class="text-2xl font-bold mb-2">{{ $product->name }}</h1>
-
-                @if ($product->price)
-                    <div class="text-xl text-green-700 mb-2">
-                        RM {{ number_format($product->price, 2) }}
-                    </div>
-                @endif
-
-                @if ($product->short_description)
-                    <p class="text-gray-700 mb-4">{{ $product->short_description }}</p>
-                @endif
-
-                <form action="{{ route('cart.add') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-                    @if ($product->variants->count())
-                        <div>
-                            <label class="block text-sm font-semibold mb-1">Variant</label>
-                            <select name="variant_id" class="border rounded w-full px-2 py-1">
-                                @foreach ($product->variants as $variant)
-                                    <option value="{{ $variant->id }}">
-                                        {{ $variant->name }}
-                                        @if ($variant->price)
-                                            - RM {{ number_format($variant->price, 2) }}
-                                        @endif
-                                    </option>
+            <div class="grid gap-8 md:grid-cols-2">
+                <!-- 图片 -->
+                <div>
+                    @if ($product->images->count())
+                        <div class="aspect-square overflow-hidden rounded-2xl bg-white shadow">
+                            <img src="{{ asset($product->images->first()->path) }}" alt="{{ $product->name }}"
+                                class="h-full w-full object-cover">
+                        </div>
+                        @if ($product->images->count() > 1)
+                            <div class="mt-3 flex gap-2">
+                                @foreach ($product->images as $image)
+                                    <div class="h-16 w-16 overflow-hidden rounded-lg border bg-gray-100">
+                                        <img src="{{ asset($image->path) }}" alt=""
+                                            class="h-full w-full object-cover">
+                                    </div>
                                 @endforeach
-                            </select>
+                            </div>
+                        @endif
+                    @else
+                        <div
+                            class="flex aspect-square items-center justify-center rounded-2xl bg-white text-gray-400 shadow">
+                            No image
                         </div>
                     @endif
+                </div>
 
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Quantity</label>
-                        <input type="number" name="quantity" value="1" min="1"
-                            class="border rounded w-24 px-2 py-1">
+                <!-- 信息 + 加入购物车 -->
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wide text-indigo-600">
+                        {{ $product->category?->name ?? 'Product' }}
+                    </p>
+                    <h1 class="mt-1 text-2xl font-bold text-gray-900">{{ $product->name }}</h1>
+
+                    <div class="mt-3 flex items-center gap-3">
+                        @if ($product->price)
+                            <div class="text-2xl font-semibold text-indigo-700">
+                                RM {{ number_format($product->price, 2) }}
+                            </div>
+                        @endif
                     </div>
 
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                        Add to Cart
-                    </button>
-                </form>
+                    @if ($product->short_description)
+                        <p class="mt-2 text-sm text-gray-600">
+                            {{ $product->short_description }}
+                        </p>
+                    @endif
 
-                @if ($product->description)
-                    <div class="mt-6 prose max-w-none">
-                        {!! $product->description !!}
-                    </div>
-                @endif
+                    <form action="{{ route('cart.add') }}" method="POST"
+                        class="mt-6 space-y-4 rounded-2xl bg-white p-4 shadow">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        @if ($product->variants->count())
+                            <div>
+                                <label class="mb-1 block text-sm font-medium text-gray-700">Variant</label>
+                                <select name="variant_id"
+                                    class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    @foreach ($product->variants as $variant)
+                                        <option value="{{ $variant->id }}">
+                                            {{ $variant->name }}
+                                            @if ($variant->price)
+                                                - RM {{ number_format($variant->price, 2) }}
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <label class="mb-1 block text-sm font-medium text-gray-700">Quantity</label>
+                                <input type="number" name="quantity" value="1" min="1"
+                                    class="w-20 rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+
+                            <button type="submit"
+                                class="mt-6 inline-flex flex-1 items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </form>
+
+                    @if ($product->description)
+                        <div class="mt-8 rounded-2xl bg-white p-4 shadow">
+                            <h2 class="mb-2 text-sm font-semibold text-gray-900">Product details</h2>
+                            <div class="prose max-w-none text-sm">
+                                {!! $product->description !!}
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
