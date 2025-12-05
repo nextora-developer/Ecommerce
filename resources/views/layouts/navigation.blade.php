@@ -25,12 +25,13 @@
                     {{-- <a href="#" class="inline-flex ...">All Categories</a> --}}
 
                     @auth
-                        <a href="{{ route('checkout.show') }}"
+                        <a href="{{ route('user.orders.index') }}"
                             class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium
-                                  {{ request()->routeIs('checkout.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }}">
+              {{ request()->routeIs('user.orders.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }}">
                             My Orders
                         </a>
                     @endauth
+
                 </div>
             </div>
 
@@ -139,6 +140,10 @@
             <a href="{{ route('cart.index') }}"
                 class="block border-l-4 px-4 py-2 text-base font-medium border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800">
                 Cart ({{ $cartCount }})
+            </a>
+            <a href="{{ route('user.orders.index') }}"
+                class="block border-l-4 px-4 py-2 text-base font-medium border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800">
+                My Orders ({{ $cartCount }})
             </a>
         </div>
 

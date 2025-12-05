@@ -96,8 +96,8 @@ class CheckoutController extends Controller
         // 清空购物车
         session()->forget('cart');
 
-        return redirect()->route('checkout.success', $order)
-            ->with('success', 'Order created.');
+        return redirect()->route('user.orders.show', $order)
+            ->with('success', 'Order created successfully.');
     }
 
     public function success(Order $order)
