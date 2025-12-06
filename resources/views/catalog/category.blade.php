@@ -26,7 +26,7 @@
                             class="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md">
                             <div class="relative h-40 w-full bg-gray-100">
                                 @if ($product->primaryImage)
-                                    <img src="{{ asset($product->primaryImage->path) }}" alt="{{ $product->name }}"
+                                    <img src="{{ asset('storage/' . $product->primaryImage->path) }}" alt="{{ $product->name }}"
                                         class="h-full w-full object-cover">
                                 @else
                                     <div class="flex h-full w-full items-center justify-center text-xs text-gray-400">

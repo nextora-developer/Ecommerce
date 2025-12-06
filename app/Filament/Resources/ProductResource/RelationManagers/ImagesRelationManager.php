@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\FileUpload;
 
 class ImagesRelationManager extends RelationManager
 {
@@ -18,10 +19,11 @@ class ImagesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('path')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Image Path'),
+                Forms\Components\FileUpload::make('path')
+                    ->label('Image')
+                    ->image()
+                    ->directory('products') // 图片会存到 storage/app/public/products
+                    ->required(),
 
                 Forms\Components\TextInput::make('alt')
                     ->maxLength(255)

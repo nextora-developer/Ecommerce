@@ -54,6 +54,72 @@
             </div>
         </section>
 
+        {{-- Trust / selling points --}}
+        <section class="bg-gray-50">
+            <div class="mx-auto max-w-7xl px-4 py-10 lg:px-8">
+                <div class="grid gap-6 md:grid-cols-4">
+
+                    {{-- 1. Free shipping --}}
+                    <div class="flex items-start gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-600 text-lg">
+                            🚚
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900">Free shipping</div>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Enjoy free delivery on orders over <span class="font-medium">RM 80</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- 2. Easy returns --}}
+                    <div class="flex items-start gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-600 text-lg">
+                            🔄
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900">7-day returns</div>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Changed your mind? Return items within 7 days.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- 3. Secure checkout --}}
+                    <div class="flex items-start gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-600 text-lg">
+                            🔒
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900">Secure checkout</div>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Payments are encrypted and processed securely.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- 4. Local support --}}
+                    <div class="flex items-start gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm">
+                        <div
+                            class="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-600 text-lg">
+                            💬
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900">Fast support</div>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Need help? Chat with us on WhatsApp.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
         <!-- 分类 -->
         <section id="categories" class="mx-auto max-w-7xl px-4 py-10 lg:px-8">
             <div class="mb-4 flex items-center justify-between">
@@ -105,8 +171,8 @@
                                 class="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md">
                                 <div class="relative h-40 w-full bg-gray-100">
                                     @if ($product->primaryImage)
-                                        <img src="{{ asset($product->primaryImage->path) }}" alt="{{ $product->name }}"
-                                            class="h-full w-full object-cover">
+                                        <img src="{{ asset('storage/' . $product->primaryImage->path) }}"
+                                            alt="{{ $product->name }}" class="h-full w-full object-cover">
                                     @else
                                         <div class="flex h-full w-full items-center justify-center text-xs text-gray-400">
                                             No image
@@ -136,5 +202,52 @@
                 @endif
             </div>
         </section>
+
+        {{-- ==== All Products / Shop ==== --}}
+        {{-- <section id="shop" class="mt-14">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Shop</h2>
+                <p class="text-xs text-gray-500">Browse all products</p>
+            </div>
+
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($latestProducts as $product)
+                    @include('catalog.partials.product-card', ['product' => $product])
+                @endforeach
+            </div>
+        </section> --}}
+
+        {{-- ==== Featured Products ==== --}}
+        {{-- @if ($featuredProducts->isNotEmpty())
+            <section id="featured" class="mt-14">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-indigo-600">Featured Picks</h2>
+                    <p class="text-xs text-gray-500">Selected items we think you’ll love</p>
+                </div>
+
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($featuredProducts as $product)
+                        @include('catalog.partials.product-card', ['product' => $product])
+                    @endforeach
+                </div>
+            </section>
+        @endif --}}
+
+        {{-- ==== Deals / On Sale ==== --}}
+        {{-- @if ($dealProducts->isNotEmpty())
+            <section id="deals" class="mt-14 mb-14">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-indigo-600">Deals & Offers</h2>
+                    <p class="text-xs text-gray-500">Limited-time price drops available now</p>
+                </div>
+
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($dealProducts as $product)
+                        @include('catalog.partials.product-card', ['product' => $product])
+                    @endforeach
+                </div>
+            </section>
+        @endif --}}
+
     </div>
 @endsection

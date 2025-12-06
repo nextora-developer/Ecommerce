@@ -12,14 +12,14 @@
                 <div>
                     @if ($product->images->count())
                         <div class="aspect-square overflow-hidden rounded-2xl bg-white shadow">
-                            <img src="{{ asset($product->images->first()->path) }}" alt="{{ $product->name }}"
+                            <img src="{{ asset('storage/' . $product->primaryImage->path) }}" alt="{{ $product->name }}"
                                 class="h-full w-full object-cover">
                         </div>
                         @if ($product->images->count() > 1)
                             <div class="mt-3 flex gap-2">
                                 @foreach ($product->images as $image)
                                     <div class="h-16 w-16 overflow-hidden rounded-lg border bg-gray-100">
-                                        <img src="{{ asset($image->path) }}" alt=""
+                                        <img src="{{ asset('storage/' . $image->path) }}" alt=""
                                             class="h-full w-full object-cover">
                                     </div>
                                 @endforeach

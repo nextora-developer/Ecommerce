@@ -52,8 +52,7 @@ class VariantsRelationManager extends RelationManager
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('price')
-                    ->money('myr')
-                    ->nullable(),
+                    ->money('myr'),
 
                 Tables\Columns\TextColumn::make('stock')
                     ->sortable(),

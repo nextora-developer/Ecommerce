@@ -11,6 +11,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 
 class ProductResource extends Resource
 {
@@ -64,6 +68,73 @@ class ProductResource extends Resource
                         Forms\Components\RichEditor::make('description')
                             ->columnSpanFull(),
                     ]),
+
+                Forms\Components\Section::make('Variants')
+                    ->description('Add product variants such as size / color, with their own price and stock.')
+                    ->schema([
+                        Repeater::make('variants')
+                            ->relationship()   // 使用 product->variants 关系
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Variant name')
+                                    ->required(),
+
+                                TextInput::make('sku')
+                                    ->label('SKU')
+                                    ->maxLength(255),
+
+                                TextInput::make('price')
+                                    ->numeric()
+                                    ->prefix('RM')
+                                    ->nullable(),
+
+                                TextInput::make('stock')
+                                    ->numeric()
+                                    ->default(0),
+
+                                Toggle::make('is_default')
+                                    ->label('Default')
+                                    ->default(false),
+                            ])
+                            ->columns(3)
+                            ->defaultItems(0)
+                            ->itemLabel(
+                                fn(array $state): ?string =>
+                                $state['name'] ?? 'New variant'
+                            )
+                            ->collapsed(), // 初始收起来一点干净
+                    ]),
+
+                Forms\Components\Section::make('Images')
+                    ->description('Upload product images. One image can be marked as primary.')
+                    ->schema([
+                        Repeater::make('images')
+                            ->relationship()
+                            ->schema([
+                                FileUpload::make('path')
+                                    ->disk('public')
+                                    ->label('Image')
+                                    ->fetchFileInformation(false)
+                                    ->image()
+                                    ->directory('products')
+                                    ->required(),
+
+                                TextInput::make('alt')
+                                    ->label('Alt text')
+                                    ->maxLength(255)
+                                    ->nullable(),
+
+                                Toggle::make('is_primary')
+                                    ->label('Primary')
+                                    ->default(false),
+
+                                TextInput::make('sort_order')
+                                    ->numeric()
+                                    ->default(0),
+                            ])
+                            ->columns(2)
+                            ->defaultItems(0),
+                    ]),
             ]);
     }
 
@@ -108,10 +179,7 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            VariantsRelationManager::class,
-            ImagesRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getPages(): array
