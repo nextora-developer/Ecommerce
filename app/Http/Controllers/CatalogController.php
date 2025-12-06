@@ -48,4 +48,87 @@ class CatalogController extends Controller
 
         return view('catalog.product', compact('product'));
     }
+
+    public function shop(Request $request)
+    {
+        $query = Product::with(['category', 'primaryImage']);
+
+        // 🔍 Search
+        if ($request->filled('q')) {
+            $keyword = '%' . $request->q . '%';
+
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', $keyword);
+
+                // 如果你有这两个字段就保留，没有就可以先删掉
+                // $q->orWhere('sku', 'like', $keyword);
+                // $q->orWhere('short_description', 'like', $keyword);
+            });
+        }
+
+        // Category filter by slug
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Sort
+        switch ($request->get('sort')) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            default:
+                $query->latest(); // 默认 newest
+        }
+
+        $products   = $query->paginate(12)->withQueryString();
+        $categories = Category::orderBy('name')->get();
+
+        // 如果是 ajax 请求，返回局部 HTML + 下一页链接
+        if ($request->ajax()) {
+            $html = view('catalog.partials.product-grid-items', compact('products'))->render();
+
+            return response()->json([
+                'html'      => $html,
+                'next_page' => $products->nextPageUrl(),
+            ]);
+        }
+
+        return view('catalog.shop', compact('products', 'categories'));
+    }
+
+    public function suggestions(Request $request)
+    {
+        $term = trim($request->get('q', ''));
+
+        if (mb_strlen($term) < 2) {
+            return response()->json([]);
+        }
+
+        $keyword = '%' . $term . '%';
+
+        $products = Product::select('id', 'name', 'slug', 'price')
+            ->where('name', 'like', $keyword)
+            // 这里以后可以加 SKU/描述搜索
+            ->orderBy('name')
+            ->limit(6)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id'    => $product->id,
+                    'name'  => $product->name,
+                    'price' => number_format($product->price, 2),
+                    'url'   => route('catalog.product', $product->slug),
+                ];
+            });
+
+        return response()->json($products);
+    }
 }

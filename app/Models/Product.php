@@ -39,4 +39,11 @@ class Product extends Model
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true);
     }
+
+    // 哪些用户收藏了这个商品（目前用不太到，但以后可以做「最受欢迎」）
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'wishlists')
+            ->withTimestamps();
+    }
 }

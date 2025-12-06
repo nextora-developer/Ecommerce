@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,12 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
+Route::get('/shop', [CatalogController::class, 'shop'])->name('shop.index');
+
+Route::get('/search-suggestions', [CatalogController::class, 'suggestions'])
+    ->name('search.suggestions');
+
+
 /*
 |--------------------------------------------------------------------------
 | Auth required
@@ -38,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Account Dashboard（左侧菜单那个页面）
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/', [AccountController::class, 'dashboard'])->name('dashboard');
@@ -55,6 +62,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-orders/{order}', [UserOrderController::class, 'show'])
         ->name('user.orders.show');
+
+    // 收藏列表（Account 左边的 Favorites 页面）
+    Route::get('/account/favorites', [WishlistController::class, 'index'])
+        ->name('favorites.index');
+
+    // 切换收藏 / 取消收藏
+    Route::post('/wishlist/{product}', [WishlistController::class, 'toggle'])
+        ->name('wishlist.toggle');
 });
 
 require __DIR__ . '/auth.php';

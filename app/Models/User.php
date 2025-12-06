@@ -52,4 +52,11 @@ class User extends Authenticatable
     {
         return (bool) $this->is_admin;
     }
+
+    // 用户收藏的商品
+    public function wishlistItems()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists')
+            ->withTimestamps();
+    }
 }

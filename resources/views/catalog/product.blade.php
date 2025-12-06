@@ -3,7 +3,7 @@
 @section('content')
     <div class="bg-gray-50">
         <div class="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-            <a href="{{ url()->previous() }}" class="mb-4 inline-flex items-center text-xs text-gray-500 hover:text-gray-800">
+            <a href="{{ route('shop.index') }}" class="mb-4 inline-flex items-center text-xs text-gray-500 hover:text-gray-800">
                 ← Back
             </a>
 

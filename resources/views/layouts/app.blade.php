@@ -41,6 +41,171 @@
         </main>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        function setupSearch(inputId, boxId) {
+            const input = document.getElementById(inputId);
+            const box = document.getElementById(boxId);
+
+            if (!input || !box) return;
+
+            let timer = null;
+
+            function hideBox() {
+                box.classList.add('hidden');
+                box.innerHTML = '';
+            }
+
+            function renderSuggestions(items) {
+                box.innerHTML = '';
+
+                if (!items.length) {
+                    hideBox();
+                    return;
+                }
+
+                items.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.className = 'block px-3 py-2 hover:bg-gray-50 cursor-pointer';
+
+                    link.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-gray-800 line-clamp-1">${item.name}</span>
+                        <span class="text-xs text-gray-500">RM ${item.price}</span>
+                    </div>
+                `;
+
+                    box.appendChild(link);
+                });
+
+                box.classList.remove('hidden');
+            }
+
+            async function fetchSuggestions(q) {
+                if (q.length < 2) {
+                    hideBox();
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`{{ route('search.suggestions') }}?q=` + encodeURIComponent(q));
+                    if (!res.ok) return;
+
+                    const data = await res.json();
+                    renderSuggestions(data);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            input.addEventListener('input', function(e) {
+                const value = e.target.value;
+
+                clearTimeout(timer);
+                timer = setTimeout(() => fetchSuggestions(value), 200); // debounce
+            });
+
+            input.addEventListener('focus', function() {
+                if (box.innerHTML.trim() !== '') {
+                    box.classList.remove('hidden');
+                }
+            });
+
+            // 点击别处收起
+            document.addEventListener('click', function(e) {
+                if (!box.contains(e.target) && e.target !== input) {
+                    hideBox();
+                }
+            });
+        }
+
+        // 🔍 Desktop nav search
+        setupSearch('global-search-input', 'global-search-results');
+
+        // 📱 Mobile drawer search
+        setupSearch('mobile-search-input', 'mobile-search-results');
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const grid = document.getElementById('product-grid');
+        const btn = document.getElementById('load-more-btn');
+        const wrapper = document.getElementById('load-more-wrapper');
+
+        if (!grid || !btn) return;
+
+        const baseUrl = "{{ route('shop.index') }}";
+        const baseQuery = new URLSearchParams(@json(request()->query())); // 保留 q / category / sort
+
+        let loading = false;
+
+        async function loadMore() {
+            if (loading) return;
+            loading = true;
+
+            const nextPage = btn.dataset.nextPage;
+            if (!nextPage) {
+                wrapper.remove();
+                return;
+            }
+
+            // 按钮状态
+            btn.disabled = true;
+            btn.innerText = 'Loading...';
+
+            const params = new URLSearchParams(baseQuery.toString());
+            params.set('page', nextPage);
+
+            const url = baseUrl + '?' + params.toString();
+
+            try {
+                const res = await fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to load');
+                }
+
+                const data = await res.json();
+
+                // 把新产品 append 到 grid
+                grid.insertAdjacentHTML('beforeend', data.html);
+
+                if (data.next_page) {
+                    const urlObj = new URL(data.next_page);
+                    const newPage = urlObj.searchParams.get('page') || (parseInt(nextPage, 10) + 1);
+                    btn.dataset.nextPage = newPage;
+                    btn.disabled = false;
+                    btn.innerText = 'Load more';
+                } else {
+                    // 没有下一页了，移除按钮
+                    wrapper.remove();
+                }
+            } catch (e) {
+                console.error(e);
+                btn.disabled = false;
+                btn.innerText = 'Try again';
+            } finally {
+                loading = false;
+            }
+        }
+
+        btn.addEventListener('click', function() {
+            loadMore();
+        });
+
+        
+    });
+</script>
+
+
+
 <footer class="bg-gradient-to-r from-[#7F56D9] to-[#6246EA] text-white mt-20">
     <div class="mx-auto max-w-7xl px-6 py-14">
 
