@@ -6,7 +6,7 @@
 
     <!-- Desktop / 主导航 -->
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-8">
+        <div class="flex h-20 items-center justify-between gap-8">
             <!-- 左：Logo -->
             <div class="flex items-center gap-8">
                 <a href="{{ route('catalog.index') }}" class="flex items-center">

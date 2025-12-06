@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    {{-- Swiper CSS --}}
+    <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -200,9 +203,36 @@
             loadMore();
         });
 
-        
+
     });
 </script>
+
+{{-- Swiper JS --}}
+<script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const el = document.querySelector('.hero-swiper');
+        if (!el) return;
+
+        new Swiper('.hero-swiper', {
+            loop: true,
+            autoplay: {
+                delay: 6000
+            },
+            speed: 700,
+            pagination: {
+                el: '.hero-swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.hero-swiper-next',
+                prevEl: '.hero-swiper-prev',
+            },
+        });
+    });
+</script>
+
 
 
 

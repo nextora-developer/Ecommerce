@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\HeroBanner;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
@@ -22,7 +23,13 @@ class CatalogController extends Controller
             ->with('primaryImage')
             ->get();
 
-        return view('catalog.index', compact('categories', 'latestProducts'));
+        $heroBanners = HeroBanner::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')          // 先按 sort_order
+            ->orderByDesc('updated_at')      // 再按更新时间
+            ->get();
+
+        return view('catalog.index', compact('categories', 'latestProducts', 'heroBanners'));
     }
 
     public function category(string $slug)
